@@ -8,6 +8,7 @@ target/
 
 # Package Files #
 *.jar
+!java-web-code/webapp/WEB-INF/lib/*.jar
 *.war
 *.nar
 *.ear
