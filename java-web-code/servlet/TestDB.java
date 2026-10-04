@@ -9,7 +9,8 @@ public class TestDB {
             Connection con = DBConnection.getConnection();
 
             System.out.println("JDBC CONNECTED TO MYSQL!");
-            System.out.println("Database: " + con.getCatalog());
+            System.out.println("Database: " +
+                con.getCatalog());
 
             con.close();
 

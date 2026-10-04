@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DBConnection {
 
     private static final String URL =
-            "jdbc:mysql://localhost:3306/course_registration_prj";
+            "jdbc:mysql://localhost:3306/course_registration_prj?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
     private static final String USER = "root";
 
@@ -17,6 +17,7 @@ public class DBConnection {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
+            System.err.println("MySQL JDBC Driver not found! Ensure mysql-connector-j jar is in the classpath.");
             e.printStackTrace();
         }
     }
@@ -29,3 +30,4 @@ public class DBConnection {
         );
     }
 }
+
