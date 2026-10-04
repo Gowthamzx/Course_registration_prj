@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Registrations List &bull; CourseSync{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-list-check" style="color: var(--primary);"></i>
+            Course Registrations
+        </h1>
+        <p class="page-subtitle">Complete registry of students and their currently enrolled courses</p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="badge badge-code" style="font-size: 0.9rem; padding: 8px 16px;">
+            <i class="fa-solid fa-clipboard-list"></i> {{ registrations|length }} Total Records
+        </span>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> New Enrollment
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-toolbar">
+        <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-table-list" style="color: var(--accent);"></i>
+            <span>Active Enrollments</span>
+        </div>
+        <div class="table-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="regSearch" placeholder="Search by student, course, email...">
+        </div>
+    </div>
+
+    {% if registrations %}
+    <div class="table-responsive">
+        <table id="regTable">
+            <thead>
+                <tr>
+                    <th>Registration ID</th>
+                    <th>Student Name & Email</th>
+                    <th>Enrolled Course</th>
+                    <th>Status</th>
+                    <th style="text-align: center;">Customize</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in registrations %}
+                <tr>
+                    <td>
+                        <span class="badge badge-id">#{{ r.registration_id }}</span>
+                    </td>
+                    <td>
+                        <div class="user-cell">
+                            <span class="avatar-initial">{{ r.student_name[0] if r.student_name else 'S' }}</span>
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">{{ r.student_name }}</div>
+                                {% if r.email %}
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ r.email }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            {% if r.course_code %}
+                            <span class="badge badge-code">{{ r.course_code }}</span>
+                            {% endif %}
+                            <span style="font-weight: 600; color: #1e293b;">{{ r.course_name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-success">
+                            <i class="fa-solid fa-circle-check"></i> Enrolled
+                        </span>
+                    </td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <form action="{{ url_for('delete_registration', reg_id=r.registration_id) }}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to remove registration #{{ r.registration_id }} for {{ r.student_name }}?');">
+                            <button type="submit" class="btn-action-danger" title="Remove student from this course">
+                                <i class="fa-solid fa-trash-can"></i> Remove
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div class="empty-title">No Registrations Found</div>
+        <div class="empty-desc">There are no course registrations recorded in the database.</div>
+        <a href="{{ url_for('register') }}" class="btn btn-primary" style="margin-top: 16px;">
+            <i class="fa-solid fa-plus-circle"></i> Create First Registration
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setupTableSearch('regSearch', 'regTable');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Course Catalog &bull; CourseSync{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-book-open" style="color: var(--primary);"></i>
+            Courses Management
+        </h1>
+        <p class="page-subtitle">Add new academic courses, assign instructors, and customize catalog</p>
+    </div>
+    <span class="badge badge-code" style="font-size: 0.9rem; padding: 8px 16px;">
+        <i class="fa-solid fa-layer-group"></i> {{ courses|length }} Total Courses
+    </span>
+</div>
+
+<div class="grid-2">
+    <!-- Add Course Form Card -->
+    <div>
+        <div class="card" style="position: sticky; top: 90px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa-solid fa-circle-plus" style="color: var(--primary);"></i>
+                    <span>Add New Course</span>
+                </div>
+            </div>
+
+            <form action="{{ url_for('courses') }}" method="post">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Course Code <span class="required-dot">*</span></label>
+                        <div class="input-container">
+                            <input type="text" name="course_code" class="input-with-icon" placeholder="e.g. CS101" required>
+                            <i class="fa-solid fa-hashtag input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Credits <span class="required-dot">*</span></label>
+                        <div class="input-container">
+                            <input type="number" name="credits" class="input-with-icon" min="1" max="10" placeholder="1-10" value="3" required>
+                            <i class="fa-solid fa-award input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Course Name <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <input type="text" name="course_name" class="input-with-icon" placeholder="e.g. Introduction to Computer Science" required>
+                        <i class="fa-solid fa-book input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Instructor / Professor <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <input type="text" name="instructor" class="input-with-icon" placeholder="e.g. Dr. Alan Turing" required>
+                        <i class="fa-solid fa-chalkboard-user input-icon"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 8px;">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Course to Database
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Courses Table Card -->
+    <div>
+        <div class="table-container">
+            <div class="table-toolbar">
+                <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-list" style="color: var(--accent);"></i>
+                    <span>Course Catalog</span>
+                </div>
+                <div class="table-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="courseSearch" placeholder="Search courses...">
+                </div>
+            </div>
+
+            {% if courses %}
+            <div class="table-responsive">
+                <table id="coursesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Course Title</th>
+                            <th>Credits</th>
+                            <th>Instructor</th>
+                            <th style="text-align: center;">Customize</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in courses %}
+                        <tr>
+                            <td><span class="badge badge-id">#{{ c.course_id }}</span></td>
+                            <td><span class="badge badge-code">{{ c.course_code }}</span></td>
+                            <td style="font-weight: 600; color: #1e293b;">{{ c.course_name }}</td>
+                            <td><span class="badge badge-credits">{{ c.credits }} Cr</span></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-user-tie" style="color: var(--text-light); font-size: 0.85rem;"></i>
+                                    <span>{{ c.instructor }}</span>
+                                </div>
+                            </td>
+                            <td style="text-align: center; white-space: nowrap;">
+                                <form action="{{ url_for('delete_course', course_id=c.course_id) }}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete course {{ c.course_code }} - {{ c.course_name }}?');">
+                                    <button type="submit" class="btn-action-danger" title="Delete Course">
+                                        <i class="fa-solid fa-trash-can"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="empty-title">No Courses Added Yet</div>
+                <div class="empty-desc">Use the form on the left to add your first course to the catalog.</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setupTableSearch('courseSearch', 'coursesTable');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard &bull; Course Registration System{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<div class="hero-card">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> Central Academic Portal
+        </div>
+        <h1 class="hero-title">Manage Courses & Student Enrollments Seamlessly</h1>
+        <p class="hero-subtitle">
+            An integrated management portal to organize curriculum, manage student rosters, and handle real-time course registrations.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-plus-circle"></i> New Registration
+            </a>
+            <a href="{{ url_for('courses') }}" class="btn btn-secondary btn-lg">
+                <i class="fa-solid fa-book"></i> View Courses
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Key Stat Metrics -->
+<div class="grid-3" style="margin-bottom: 32px;">
+    <a href="{{ url_for('students') }}" class="stat-card">
+        <div class="stat-icon primary">
+            <i class="fa-solid fa-user-graduate"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.students }}</div>
+            <div class="stat-label">Enrolled Students</div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('courses') }}" class="stat-card">
+        <div class="stat-icon accent">
+            <i class="fa-solid fa-book-open"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.courses }}</div>
+            <div class="stat-label">Active Courses</div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('registrations') }}" class="stat-card">
+        <div class="stat-icon success">
+            <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-value">{{ stats.registrations }}</div>
+            <div class="stat-label">Total Registrations</div>
+        </div>
+    </a>
+</div>
+
+<!-- Quick Navigation Hub -->
+<div class="page-header" style="margin-bottom: 20px;">
+    <div>
+        <h2 style="font-size: 1.4rem;">Quick Operations</h2>
+        <p class="page-subtitle">Frequently accessed academic tools & records</p>
+    </div>
+</div>
+
+<div class="grid-4" style="margin-bottom: 32px;">
+    <a href="{{ url_for('students') }}" class="action-card">
+        <div class="action-card-icon">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="action-card-title">
+            <span>Students</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 0.9rem; color: var(--primary);"></i>
+        </div>
+        <p class="action-card-desc">Add new students, update records, and search student rosters across departments.</p>
+        <div class="action-card-link">Manage Directory &rarr;</div>
+    </a>
+
+    <a href="{{ url_for('courses') }}" class="action-card">
+        <div class="action-card-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="action-card-title">
+            <span>Courses</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 0.9rem; color: var(--primary);"></i>
+        </div>
+        <p class="action-card-desc">Create academic courses, set credit weights, and assign faculty instructors.</p>
+        <div class="action-card-link">Manage Catalog &rarr;</div>
+    </a>
+
+    <a href="{{ url_for('register') }}" class="action-card">
+        <div class="action-card-icon">
+            <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+        <div class="action-card-title">
+            <span>Register Course</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 0.9rem; color: var(--primary);"></i>
+        </div>
+        <p class="action-card-desc">Enroll students into available courses with immediate validation and records update.</p>
+        <div class="action-card-link">Enroll Student &rarr;</div>
+    </a>
+
+    <a href="{{ url_for('registrations') }}" class="action-card">
+        <div class="action-card-icon">
+            <i class="fa-solid fa-table-list"></i>
+        </div>
+        <div class="action-card-title">
+            <span>Registrations</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 0.9rem; color: var(--primary);"></i>
+        </div>
+        <p class="action-card-desc">Search, filter, and audit active student enrollment history and course assignments.</p>
+        <div class="action-card-link">View History &rarr;</div>
+    </a>
+</div>
+
+<!-- Recent Registrations Preview -->
+{% if recent %}
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i>
+            <span>Recent Registrations</span>
+        </div>
+        <a href="{{ url_for('registrations') }}" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">
+            View All Registrations
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ref #</th>
+                    <th>Student Name</th>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent %}
+                <tr>
+                    <td><span class="badge badge-id">#{{ r.registration_id }}</span></td>
+                    <td>
+                        <div class="user-cell">
+                            <span class="avatar-initial">{{ r.student_name[0] if r.student_name else 'S' }}</span>
+                            <span style="font-weight: 600;">{{ r.student_name }}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-code">{{ r.course_code }}</span></td>
+                    <td>{{ r.course_name }}</td>
+                    <td><span class="badge badge-success"><i class="fa-solid fa-check"></i> Enrolled</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Student Directory &bull; CourseSync{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-user-graduate" style="color: var(--primary);"></i>
+            Students Management
+        </h1>
+        <p class="page-subtitle">Add new student records, manage student directory, and customize rosters</p>
+    </div>
+    <span class="badge badge-code" style="font-size: 0.9rem; padding: 8px 16px;">
+        <i class="fa-solid fa-users"></i> {{ students|length }} Total Students
+    </span>
+</div>
+
+<div class="grid-2">
+    <!-- Add Student Form Card -->
+    <div>
+        <div class="card" style="position: sticky; top: 90px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa-solid fa-user-plus" style="color: var(--primary);"></i>
+                    <span>Add New Student</span>
+                </div>
+            </div>
+
+            <form action="{{ url_for('students') }}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Full Name <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <input type="text" name="name" class="input-with-icon" placeholder="e.g. John Doe" required>
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <input type="email" name="email" class="input-with-icon" placeholder="e.g. john.doe@university.edu" required>
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department / Major <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <input type="text" name="department" class="input-with-icon" placeholder="e.g. Computer Science, Engineering" required>
+                        <i class="fa-solid fa-building-columns input-icon"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 8px;">
+                    <i class="fa-solid fa-user-check"></i> Save Student Record
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Students Table Card -->
+    <div>
+        <div class="table-container">
+            <div class="table-toolbar">
+                <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-address-book" style="color: var(--accent);"></i>
+                    <span>Student Directory</span>
+                </div>
+                <div class="table-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="studentSearch" placeholder="Search students...">
+                </div>
+            </div>
+
+            {% if students %}
+            <div class="table-responsive">
+                <table id="studentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th style="text-align: center;">Customize</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td><span class="badge badge-id">#{{ s.student_id }}</span></td>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="avatar-initial">{{ s.name[0] if s.name else 'S' }}</span>
+                                    <span style="font-weight: 600;">{{ s.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span style="color: var(--text-muted); font-size: 0.88rem;">{{ s.email }}</span>
+                            </td>
+                            <td><span class="badge badge-dept">{{ s.department if s.department else 'General' }}</span></td>
+                            <td style="text-align: center; white-space: nowrap;">
+                                <form action="{{ url_for('delete_student', student_id=s.student_id) }}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete student {{ s.name }} (#{{ s.student_id }}) and all their enrollments?');">
+                                    <button type="submit" class="btn-action-danger" title="Delete Student">
+                                        <i class="fa-solid fa-trash-can"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="empty-title">No Students Found</div>
+                <div class="empty-desc">Use the form on the left to add your first student.</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setupTableSearch('studentSearch', 'studentsTable');
+    });
+</script>
+{% endblock %}

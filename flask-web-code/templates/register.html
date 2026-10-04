@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Course Registration &bull; CourseSync{% endblock %}
+
+{% block content %}
+<div class="page-header" style="max-width: 800px; margin: 0 auto 28px auto;">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-file-signature" style="color: var(--primary);"></i>
+            Direct Course Enrollment
+        </h1>
+        <p class="page-subtitle">Type student details directly and select the course to enroll</p>
+    </div>
+</div>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fa-solid fa-user-plus" style="color: var(--primary);"></i>
+                <span>Student & Course Enrollment Form</span>
+            </div>
+            <span class="badge badge-dept">
+                <i class="fa-solid fa-bolt"></i> Instant Registration
+            </span>
+        </div>
+
+        <form action="{{ url_for('register') }}" method="post">
+            <!-- Student Information Section -->
+            <div style="margin-bottom: 24px;">
+                <div style="font-size: 0.95rem; font-weight: 700; color: #1e1b4b; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-id-card" style="color: var(--primary);"></i>
+                    <span>Student Information</span>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Student Full Name <span class="required-dot">*</span></label>
+                        <div class="input-container">
+                            <input type="text" name="name" class="input-with-icon" placeholder="e.g. Alex Johnson" required>
+                            <i class="fa-solid fa-user input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Student Email <span class="required-dot">*</span></label>
+                        <div class="input-container">
+                            <input type="email" name="email" class="input-with-icon" placeholder="e.g. alex.johnson@university.edu" required>
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department / Major</label>
+                    <div class="input-container">
+                        <input type="text" name="department" class="input-with-icon" placeholder="e.g. Computer Science (optional)">
+                        <i class="fa-solid fa-building-columns input-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+            <!-- Course Selection Section -->
+            <div style="margin-bottom: 24px;">
+                <div style="font-size: 0.95rem; font-weight: 700; color: #1e1b4b; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-book-bookmark" style="color: var(--accent);"></i>
+                    <span>Select Course to Enroll</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Available Courses <span class="required-dot">*</span></label>
+                    <div class="input-container">
+                        <select name="course_id" class="input-with-icon" required>
+                            <option value="" disabled selected>-- Select a Course from Catalog --</option>
+                            {% for c in courses %}
+                            <option value="{{ c.course_id }}">
+                                [{{ c.course_code }}] {{ c.course_name }} (ID #{{ c.course_id }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <i class="fa-solid fa-book-open input-icon"></i>
+                    </div>
+                    <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 6px; display: block;">
+                        Need to create a new course? <a href="{{ url_for('courses') }}" style="color: var(--primary); font-weight: 600;">Go to Courses Catalog</a>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Notice Box -->
+            <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-color);">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary); font-size: 1.1rem;"></i>
+                <div style="font-size: 0.88rem; color: var(--text-muted);">
+                    If the student email is new, a new student record is created automatically and linked to this registration.
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="display: flex; gap: 14px;">
+                <button type="submit" class="btn btn-primary btn-lg" style="flex: 2;">
+                    <i class="fa-solid fa-plus-circle"></i> Add Student & Register Course
+                </button>
+                <a href="{{ url_for('registrations') }}" class="btn btn-outline btn-lg" style="flex: 1;">
+                    <i class="fa-solid fa-list-check"></i> View Registrations
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
